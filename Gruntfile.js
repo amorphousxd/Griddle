@@ -77,11 +77,6 @@ module.exports = function(grunt) {
           { expand: true, cwd: 'docs/assets/', src: ['**'], dest: 'docs/html/', flatten: false},
           { expand: true, src: ['examples/assets/scripts/testComponent.js', 'examples/assets/scripts/fakeData.js', 'examples/assets/scripts/swapi.min.js', 'examples/assets/scripts/freezeframe.min.js', 'examples/assets/scripts/GriddleWithCallback.js'], dest: 'docs/html/scripts', flatten: true}
         ]
-      },
-      modules: {
-        files: [
-          {expand: true, src: ['compiled/*.js'], dest: 'modules', flatten: true}
-        ]
       }
     },
     webpack: {
@@ -139,7 +134,8 @@ module.exports = function(grunt) {
     },
     babel: {
       options: {
-        sourceMap: false
+        sourceMap: false,
+        optional : ['runtime']
       },
       build: {
         files: [{
@@ -190,7 +186,6 @@ module.exports = function(grunt) {
       'includereplace',
       'markdown',
       'clean:includes',
-      // 'clean:compiled',
       'babel',
       'webpack:docs',
       'webpack:default',

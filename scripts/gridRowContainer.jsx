@@ -4,6 +4,23 @@
 var React = require('react');
 var GridRow = require('./gridRow');
 var ColumnProperties = require('./columnProperties');
+var _ = require('underscore');
+var assign = require('object-assign');
+
+function traverseChildren(root, rootId = 0, level = 0) {
+  var result = [];
+
+  root = assign({$$id: rootId + 1, $$parentId: rootId === 0 ? void 0 : rootId, $$level: level}, root)
+  result.push(root);
+
+  if (Array.isArray(root.children) && root.children.length > 0) {
+    result = root.children.reduce(function (acc, child) {
+      return acc.concat(traverseChildren(child, root.$$id, level + 1));
+    }, result);
+  }
+
+  return result;
+}
 
 var GridRowContainer = React.createClass({
     getDefaultProps: function(){
@@ -23,17 +40,21 @@ var GridRowContainer = React.createClass({
       };
     },
     getInitialState: function(){
-        return {
-           "data": {
-           },
-           "showChildren":false
-        }
+      return {
+        data: {},
+        showChildren: []
+      }
     },
     componentWillReceiveProps: function(){
-      this.setShowChildren(false);
+      this.setShowChildren([]);
     },
-    toggleChildren: function(){
-      this.setShowChildren(this.state.showChildren === false);
+    toggleChildren: function (parentId) {
+      var {showChildren} = this.state;
+      if (showChildren.indexOf(parentId) >= 0) {
+        this.setShowChildren(_.without(showChildren, parentId));
+      } else {
+        this.setShowChildren(showChildren.concat([parentId]));
+      }
     },
     setShowChildren: function(visible){
       this.setState({
@@ -41,44 +62,32 @@ var GridRowContainer = React.createClass({
       });
     },
     verifyProps: function(){
-        if(this.props.columnSettings === null){
-           console.error("gridRowContainer: The columnSettings prop is null and it shouldn't be");
-        }
+      if(this.props.columnSettings === null){
+        console.error("gridRowContainer: The columnSettings prop is null and it shouldn't be");
+      }
     },
-    render: function(){
+    rowHasChildren: function (row) {
+      return row.children && row.children.length > 0;
+    },
+    rowHasShownChildren: function (row) {
+      return this.state.showChildren.indexOf(row.$$id) >= 0;
+    },
+    render: function() {
       this.verifyProps();
-      var that = this;
 
       if(typeof this.props.data === "undefined"){return (<tbody></tbody>);}
-      var arr = [];
+      var arr = traverseChildren(this.props.data)
+        .filter((row) => typeof row.$$parentId === 'undefined' || this.state.showChildren.indexOf(row.$$parentId) >= 0)
+        .map((row) => {
+          return <GridRow useGriddleStyles={this.props.useGriddleStyles} data={row} columnSettings={this.props.columnSettings}
+            rowSettings={this.props.rowSettings} hasChildren={this.rowHasChildren(row)} toggleChildren={this.toggleChildren.bind(this, row.$$id)}
+            isChildRow={!!row.$$parentId} showChildren={this.rowHasShownChildren(row)} useGriddleIcons={this.props.useGriddleIcons}
+            parentRowExpandedClassName={this.props.parentRowExpandedClassName} parentRowCollapsedClassName={this.props.parentRowCollapsedClassName}
+            parentRowExpandedComponent={this.props.parentRowExpandedComponent} parentRowCollapsedComponent={this.props.parentRowCollapsedComponent}
+            paddingHeight={this.props.paddingHeight} rowHeight={this.props.rowHeight} onRowClick={this.props.onRowClick} />
+        });
 
-      arr.push(<GridRow useGriddleStyles={this.props.useGriddleStyles} isSubGriddle={this.props.isSubGriddle} data={this.props.data} columnSettings={this.props.columnSettings} rowSettings={this.props.rowSettings}
-        hasChildren={that.props.hasChildren} toggleChildren={that.toggleChildren} showChildren={that.state.showChildren} key={that.props.uniqueId} useGriddleIcons={that.props.useGriddleIcons}
-        parentRowExpandedClassName={this.props.parentRowExpandedClassName} parentRowCollapsedClassName={this.props.parentRowCollapsedClassName}
-        parentRowExpandedComponent={this.props.parentRowExpandedComponent} parentRowCollapsedComponent={this.props.parentRowCollapsedComponent}
-        paddingHeight={that.props.paddingHeight} rowHeight={that.props.rowHeight} onRowClick={that.props.onRowClick} />);
-        var children = null;
-
-      if(that.state.showChildren){
-          children =  that.props.hasChildren && this.props.data["children"].map(function(row, index){
-              if(typeof row["children"] !== "undefined"){
-                return (<tr style={{paddingLeft: 5}}>
-                          <td colSpan={that.props.columnSettings.getVisibleColumnCount()} className="griddle-parent" style={that.props.useGriddleStyles ? {border: "none", "padding": "0 0 0 5px"} : null}>
-                            <Griddle isSubGriddle={true} results={[row]} columns={that.props.columnSettings.getColumns()} tableClassName={that.props.tableClassName} parentRowExpandedClassName={that.props.parentRowExpandedClassName}
-                              parentRowCollapsedClassName={that.props.parentRowCollapsedClassName}
-                              showTableHeading={false} showPager={false} columnMetadata={that.props.columnSettings.columnMetadata}
-                              parentRowExpandedComponent={that.props.parentRowExpandedComponent}
-                              parentRowCollapsedComponent={that.props.parentRowCollapsedComponent}
-                              paddingHeight={that.props.paddingHeight} rowHeight={that.props.rowHeight} />
-                          </td>
-                        </tr>);
-              }
-
-              return <GridRow useGriddleStyles={that.props.useGriddleStyles} isSubGriddle={that.props.isSubGriddle} data={row} columnSettings={that.props.columnSettings} isChildRow={true} columnMetadata={that.props.columnMetadata} key={that.props.rowSettings.getRowKey(row)} />
-          });
-      }
-
-      return that.props.hasChildren === false ? arr[0] : <tbody>{that.state.showChildren ? arr.concat(children) : arr}</tbody>
+      return <tbody>{arr}</tbody>
     }
 });
 

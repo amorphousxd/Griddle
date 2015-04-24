@@ -4,6 +4,7 @@
 var React = require('react');
 var _ = require('underscore');
 var ColumnProperties = require('./columnProperties');
+var assign = require('object-assign');
 
 var GridRow = React.createClass({
     getDefaultProps: function(){
@@ -44,10 +45,10 @@ var GridRow = React.createClass({
     render: function() {
         this.verifyProps();
         var that = this;
-        var columnStyles = null;
+        var initialColumnStyle = null;
 
         if (this.props.useGriddleStyles) {
-          columnStyles = {
+          initialColumnStyle = {
             margin: "0",
             padding: that.props.paddingHeight + "px 5px " + that.props.paddingHeight + "px 5px",
             height: that.props.rowHeight? this.props.rowHeight - that.props.paddingHeight * 2 + "px" : null,
@@ -73,6 +74,7 @@ var GridRow = React.createClass({
         var nodes = data.map((col, index) => {
             var returnValue = null;
             var meta = this.props.columnSettings.getColumnMetadataByName(col[0]);
+            var columnStyle = assign({}, initialColumnStyle);
 
             var firstColAppend;
 
@@ -86,16 +88,16 @@ var GridRow = React.createClass({
                 </span>
             }
 
-            if(index === 0 && this.props.isChildRow && this.props.useGriddleStyles){
-              columnStyles = _.extend(columnStyles, {paddingLeft:10})
+            if (index === 0 && this.props.isChildRow) {
+              assign(columnStyle, {paddingLeft: 15 * dataView.$$level});
             }
 
-            if (this.props.columnSettings.hasColumnMetadata() && typeof meta !== "undefined"){
+            if (this.props.columnSettings.hasColumnMetadata() && typeof meta !== "undefined") {
               var colData = (typeof meta.customComponent === 'undefined' || meta.customComponent === null) ? col[1] : <meta.customComponent data={col[1]} rowData={dataView} metadata={meta} />;
-              returnValue = (meta == null ? returnValue : <td onClick={this.props.hasChildren && this.handleClick} className={meta.cssClassName} key={index} style={columnStyles}>{firstColAppend}{colData}</td>);
+              returnValue = (meta == null ? returnValue : <td onClick={this.props.hasChildren && this.handleClick} className={meta.cssClassName} key={index} style={columnStyle}>{firstColAppend}{colData}</td>);
             }
 
-            return returnValue || (<td onClick={this.handleClick} key={index} style={columnStyles}>{firstColAppend}{col[1]}</td>);
+            return returnValue || (<td onClick={this.handleClick} key={index} style={columnStyle}>{firstColAppend}{col[1]}</td>);
         });
 
         //Get the row from the row settings.
