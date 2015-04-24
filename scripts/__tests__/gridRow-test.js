@@ -1,11 +1,10 @@
-/** @jsx React.DOM */
-jest.dontMock('../gridRow.jsx');
-jest.dontMock('../columnProperties.js');
+jest.dontMock('../gridRow');
+jest.dontMock('../columnProperties');
 
 var React = require('react/addons');
-var _ = require('underscore'); 
-var GridRow = require('../gridRow.jsx');
-var ColumnProperties = require('../columnProperties.js');
+var _ = require('underscore');
+var GridRow = require('../gridRow');
+var ColumnProperties = require('../columnProperties');
 var TestUtils = React.addons.TestUtils;
 
 	  fakeData = [
@@ -222,7 +221,7 @@ describe('GridRow', function(){
 		var tr = TestUtils.findRenderedDOMComponentWithTag(row2, 'tr');
 		expect(tr.length).not.toBe(null);
 		var td = TestUtils.scryRenderedDOMComponentsWithTag(tr, 'td');
-		
+
 		expect(td.length).toBeGreaterThan(0);
 		var first = td[0];
 

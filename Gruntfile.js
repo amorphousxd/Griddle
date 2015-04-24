@@ -19,19 +19,6 @@ module.exports = function(grunt) {
         url: 'http://localhost:<%= connect.server.options.port %>/docs/html/'
       }
     },
-    react: {
-      dynamic_mappings: {
-        files: [
-          {
-            expand: true,
-            cwd: 'compiled/',
-            src: ['**/*.jsx'],
-            dest: 'modules/',
-            ext: '.jsx.js'
-          }
-        ]
-      }
-    },
     jshint: {
       all: {
         src: ['Gruntfile.js', 'scripts/**/*.jsx', 'scripts/**/*.js'],
@@ -93,14 +80,14 @@ module.exports = function(grunt) {
       },
       modules: {
         files: [
-          {expand: true, src: ['compiled/columnProperties.js', 'compiled/rowProperties.js'], dest: 'modules', flatten: true}
+          {expand: true, src: ['compiled/*.js'], dest: 'modules', flatten: true}
         ]
       }
     },
     webpack: {
       default: {
         entry: {
-          Griddle: ['./compiled/griddle.jsx'],
+          Griddle: ['./scripts/griddle.jsx'],
         },
         output: {
           path: __dirname,
@@ -114,7 +101,7 @@ module.exports = function(grunt) {
         },
         module: {
           loaders: [
-            {test: /\.jsx$/, loader: 'jsx'}
+            {test: /\.(js|jsx)$/, loader: 'babel', exclude: /node_modules/}
           ]
         },
         externals: {
@@ -125,8 +112,8 @@ module.exports = function(grunt) {
       },
       docs: {
         entry: {
-            Griddle: ['./compiled/griddle.jsx'],
-            ChartistGraph: ['./node_modules/react-chartist/index.js']
+            Griddle: ['./scripts/griddle.jsx'],
+            ChartistGraph: ['./node_modules/react-chartist/dist/index.js']
         },
         output: {
           path: __dirname,
@@ -140,7 +127,7 @@ module.exports = function(grunt) {
         },
         module: {
           loaders: [
-            {test: /\.jsx$/, loader: 'jsx'}
+            {test: /\.(js|jsx)$/, loader: 'babel', exclude: /node_modules/}
           ]
         },
         externals: {
@@ -150,7 +137,7 @@ module.exports = function(grunt) {
         }
       }
     },
-    "6to5": {
+    babel: {
       options: {
         sourceMap: false
       },
@@ -159,7 +146,7 @@ module.exports = function(grunt) {
             expand: true,
             cwd: 'scripts/',
             src: ['**/*.js', '**/*.jsx'],
-            dest: 'compiled/'
+            dest: 'modules/'
           }]
       }
     },
@@ -186,7 +173,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-markdown');
   grunt.loadNpmTasks('grunt-include-replace');
-  grunt.loadNpmTasks('grunt-6to5'); 
+  grunt.loadNpmTasks('grunt-babel');
 
   grunt.registerTask('serve', function (target) {
     grunt.task.run([
@@ -203,13 +190,11 @@ module.exports = function(grunt) {
       'includereplace',
       'markdown',
       'clean:includes',
-      'clean:compiled',
-      '6to5',
+      // 'clean:compiled',
+      'babel',
       'webpack:docs',
       'webpack:default',
-      'copy',
-      'react',
-      'clean:compiled'
+      'copy'
     ]);
   })
 

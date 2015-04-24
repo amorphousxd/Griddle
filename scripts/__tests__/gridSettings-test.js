@@ -1,8 +1,7 @@
-/** @jsx React.DOM */
-jest.dontMock('../gridSettings.jsx');
+jest.dontMock('../gridSettings');
 
 var React = require('react/addons');
-var GridSettings = require('../gridSettings.jsx');
+var GridSettings = require('../gridSettings');
 var TestUtils = React.addons.TestUtils;
 
 describe('GridSettings', function() {
@@ -16,7 +15,7 @@ describe('GridSettings', function() {
 	it('calls method when page sizing', function(){
 		var mock = jest.genMockFunction();
 
-		settings.props.setPageSize = mock; 
+		settings.props.setPageSize = mock;
 
 		var someEvent = {
 			"target":{
@@ -24,7 +23,7 @@ describe('GridSettings', function() {
 			}
 		};
 
-		settings.setPageSize(someEvent); 
+		settings.setPageSize(someEvent);
 		expect(mock.mock.calls).toEqual([[3]]);
 	});
 });

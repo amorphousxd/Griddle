@@ -3,7 +3,7 @@
 */
 var React = require('react');
 var _ = require('underscore');
-var ColumnProperties = require('./columnProperties.js');
+var ColumnProperties = require('./columnProperties');
 
 var GridTitle = React.createClass({
     getDefaultProps: function(){

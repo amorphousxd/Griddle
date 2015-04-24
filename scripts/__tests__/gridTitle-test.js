@@ -1,27 +1,26 @@
-/** @jsx React.DOM */
-jest.dontMock('../gridTitle.jsx');
-jest.dontMock('../columnProperties.js');
+jest.dontMock('../gridTitle');
+jest.dontMock('../columnProperties');
 
 var React = require('react/addons');
-var GridTitle = require('../gridTitle.jsx');
+var GridTitle = require('../gridTitle');
 var TestUtils = React.addons.TestUtils;
-var ColumnProperties = require('../columnProperties.js'); 
+var ColumnProperties = require('../columnProperties');
 
 describe('GridTitle', function() {
-	var title; 
-	var columns; 
-	var columnSettings; 
-	var sortObject; 
+	var title;
+	var columns;
+	var columnSettings;
+	var sortObject;
 
 	beforeEach(function(){
 		columns = ["one", "two", "three"];
 		columnSettings = new ColumnProperties(columns, [], "children", [], []);
-    sortObject =  { 
+    sortObject =  {
         enableSort: true,
-        changeSort: null, 
+        changeSort: null,
         sortColumn: "",
-        sortAscending: true, 
-        sortAscendingClassName: "", 
+        sortAscending: true,
+        sortAscendingClassName: "",
         sortDescendingClassName: "",
         sortAscendingComponent: null,
         sortDescendingComponent: null
@@ -34,7 +33,7 @@ describe('GridTitle', function() {
 		var node = TestUtils.findRenderedDOMComponentWithTag(title, 'thead');
 		var headings = TestUtils.scryRenderedDOMComponentsWithTag(node, 'th');
 
-		var mock = jest.genMockFunction(); 
+		var mock = jest.genMockFunction();
 		title.props.sortSettings.changeSort = mock;
 
 		expect(headings.length).toEqual(3);
@@ -74,7 +73,7 @@ describe('GridTitle', function() {
 		var node = TestUtils.findRenderedDOMComponentWithTag(title2, 'thead');
 		var headings = TestUtils.scryRenderedDOMComponentsWithTag(node, 'th');
 
-		var mock = jest.genMockFunction(); 
+		var mock = jest.genMockFunction();
 		title2.props.sortSettings.changeSort = mock;
 
 		expect(headings.length).toEqual(3);
@@ -106,7 +105,7 @@ describe('GridTitle', function() {
 
     expect(mock.mock.calls.length).toEqual(0);
 
-		React.addons.TestUtils.Simulate.click(second, otherEvent);	
+		React.addons.TestUtils.Simulate.click(second, otherEvent);
 		expect(mock.mock.calls.length).toEqual(1);
 		expect(mock.mock.calls[0]).toEqual({0:"two"});
 	});

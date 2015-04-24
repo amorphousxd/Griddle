@@ -6,16 +6,18 @@
    See License / Disclaimer https://raw.githubusercontent.com/DynamicTyped/Griddle/master/LICENSE
 */
 var React = require('react');
-var GridTable = require('./gridTable.jsx');
-var GridFilter = require('./gridFilter.jsx');
-var GridPagination = require('./gridPagination.jsx');
-var GridSettings = require('./gridSettings.jsx');
-var GridNoData = require('./gridNoData.jsx');
-var CustomRowComponentContainer = require('./customRowComponentContainer.jsx');
-var CustomPaginationContainer = require('./customPaginationContainer.jsx');
+var _ = require('underscore');
+var assign = require('object-assign');
+
+var GridTable = require('./gridTable');
+var GridFilter = require('./gridFilter');
+var GridPagination = require('./gridPagination');
+var GridSettings = require('./gridSettings');
+var GridNoData = require('./gridNoData');
+var CustomRowComponentContainer = require('./customRowComponentContainer');
+var CustomPaginationContainer = require('./customPaginationContainer');
 var ColumnProperties = require('./columnProperties');
 var RowProperties = require('./rowProperties');
-var _ = require('underscore');
 
 var Griddle = React.createClass({
     columnSettings: null,
@@ -174,12 +176,14 @@ var Griddle = React.createClass({
         var maxPage = Math.ceil(totalResults / this.props.resultsPerPage);
         return maxPage;
     },
+    getMaxPageState: function (results) {
+      var maxPage = this.getMaxPage(results);
+      if (!this.state || this.state.maxPage !== maxPage){
+        return {page: 0, maxPage: maxPage, filteredColumns: this.columnSettings.filteredColumns };
+      }
+    },
     setMaxPage: function(results){
-        var maxPage = this.getMaxPage(results);
-        //re-render if we have new max page value
-        if (this.state.maxPage !== maxPage){
-          this.setState({page: 0, maxPage: maxPage, filteredColumns: this.columnSettings.filteredColumns });
-        }
+      this.setState(this.getMaxPageState(results))
     },
     setPage: function(number) {
         if(this.props.useExternal) {
@@ -237,52 +241,51 @@ var Griddle = React.createClass({
         this.setMaxPage(nextProps.results);
     },
     getInitialState: function() {
-        var state =  {
-            maxPage: 0,
-            page: 0,
-            filteredResults: null,
-            filteredColumns: [],
-            filter: "",
-            sortColumn: this.props.initialSort,
-            sortAscending: this.props.initialSortAscending,
-            showColumnChooser: false
+      this.verifyExternal();
+      this.verifyCustom();
+
+      this.columnSettings = new ColumnProperties(
+          this.props.results.length > 0 ? _.keys(this.props.results[0]) : [],
+          this.props.columns,
+          this.props.childrenColumnName,
+          this.props.columnMetadata,
+          this.props.metadataColumns
+      );
+
+      this.rowSettings = new RowProperties(
+          this.props.rowMetadata
+      );
+
+      var maxPageState = this.getMaxPageState();
+
+      var otherState;
+
+      if(this.props.useCustomGridComponent === true){
+        otherState = {
+          customComponentType: "grid"
         };
-
-        return state;
-    },
-    componentWillMount: function() {
-        this.verifyExternal();
-        this.verifyCustom();
-
-        this.columnSettings = new ColumnProperties(
-            this.props.results.length > 0 ? _.keys(this.props.results[0]) : [],
-            this.props.columns,
-            this.props.childrenColumnName,
-            this.props.columnMetadata,
-            this.props.metadataColumns
-        );
-
-        this.rowSettings = new RowProperties(
-            this.props.rowMetadata
-        );
-
-        this.setMaxPage();
-
-        //don't like the magic strings
-        if(this.props.useCustomGridComponent === true){
-            this.setState({
-                 customComponentType: "grid"
-            });
-        } else if(this.props.useCustomRowComponent === true){
-            this.setState({
-                customComponentType: "row"
-            });
-        } else {
-          this.setState({
-            filteredColumns: this.columnSettings.filteredColumns
-          })
+      } else if(this.props.useCustomRowComponent === true){
+        otherState = {
+          customComponentType: "row"
+        };
+      } else {
+        otherState = {
+          filteredColumns: this.columnSettings.filteredColumns
         }
+      }
 
+      var state =  {
+          maxPage: 0,
+          page: 0,
+          filteredResults: null,
+          filteredColumns: [],
+          filter: "",
+          sortColumn: this.props.initialSort,
+          sortAscending: this.props.initialSortAscending,
+          showColumnChooser: false
+      };
+
+      return assign(state, maxPageState, otherState);
     },
     //todo: clean these verify methods up
     verifyExternal: function(){
@@ -330,7 +333,7 @@ var Griddle = React.createClass({
             if(this.state.sortColumn !== "" || this.props.initialSort !== ""){
                 var sortProperty = _.where(this.props.columnMetadata, {columnName: this.state.sortColumn});
                 sortProperty = (sortProperty.length > 0 && sortProperty[0].hasOwnProperty("sortProperty") && sortProperty[0]["sortProperty"]) || null
-                
+
                 data = _.sortBy(data, function(item){
                     return sortProperty ? item[that.state.sortColumn||that.props.initialSort][sortProperty] :
                         item[that.state.sortColumn||that.props.initialSort];
@@ -374,7 +377,7 @@ var Griddle = React.createClass({
     },
     //this is the current results
     getCurrentResults: function(){
-      return this.state.filteredResults || this.props.results;
+      return this.state && this.state.filteredResults || this.props.results;
     },
     getCurrentPage: function(){
       return this.props.externalCurrentPage||this.state.page;
