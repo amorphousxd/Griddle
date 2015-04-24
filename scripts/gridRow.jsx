@@ -29,9 +29,12 @@ var GridRow = React.createClass({
     handleClick: function(e){
         if(this.props.onRowClick !== null && _.isFunction(this.props.onRowClick) ){
             this.props.onRowClick(this, e);
-        }else if(this.props.hasChildren){
-            this.props.toggleChildren();
         }
+    },
+    handleRowExpandToggle: function () {
+      if (this.props.hasChildren) {
+        this.props.toggleChildren();
+      }
     },
     verifyProps: function(){
         if(this.props.columnSettings === null){
@@ -71,11 +74,17 @@ var GridRow = React.createClass({
             var returnValue = null;
             var meta = this.props.columnSettings.getColumnMetadataByName(col[0]);
 
-            //todo: Make this not as ridiculous looking
-            var firstColAppend = index === 0 && this.props.hasChildren && this.props.showChildren === false && this.props.useGriddleIcons ?
-              <span style={this.props.useGriddleStyles ? {fontSize: "10px", marginRight:"5px"} : null}>{this.props.parentRowCollapsedComponent}</span> :
-              index === 0 && this.props.hasChildren && this.props.showChildren && this.props.useGriddleIcons ?
-                <span style={this.props.useGriddleStyles ? {fontSize: "10px"} : null}>{this.props.parentRowExpandedComponent}</span> : "";
+            var firstColAppend;
+
+            if (index === 0 && this.props.hasChildren && this.props.showChildren === false && this.props.useGriddleIcons) {
+              firstColAppend = <span style={this.props.useGriddleStyles ? {fontSize: "10px", marginRight:"5px"} : null} onClick={this.handleRowExpandToggle}>
+                  {this.props.parentRowCollapsedComponent}
+                </span>
+            } else if (index === 0 && this.props.hasChildren && this.props.showChildren && this.props.useGriddleIcons) {
+              firstColAppend = <span style={this.props.useGriddleStyles ? {fontSize: "10px"} : null} onClick={this.handleRowExpandToggle}>
+                  {this.props.parentRowExpandedComponent}
+                </span>
+            }
 
             if(index === 0 && this.props.isChildRow && this.props.useGriddleStyles){
               columnStyles = _.extend(columnStyles, {paddingLeft:10})
