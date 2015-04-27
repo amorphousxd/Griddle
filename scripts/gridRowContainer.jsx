@@ -36,6 +36,7 @@ var GridRowContainer = React.createClass({
         "parentRowExpandedClassName": "parent-row expanded",
         "parentRowCollapsedComponent": "▶",
         "parentRowExpandedComponent": "▼",
+        "simpleRowComponent": " ",
         "onRowClick": null
       };
     },
@@ -84,6 +85,7 @@ var GridRowContainer = React.createClass({
             isChildRow={!!row.$$parentId} showChildren={this.rowHasShownChildren(row)} useGriddleIcons={this.props.useGriddleIcons}
             parentRowExpandedClassName={this.props.parentRowExpandedClassName} parentRowCollapsedClassName={this.props.parentRowCollapsedClassName}
             parentRowExpandedComponent={this.props.parentRowExpandedComponent} parentRowCollapsedComponent={this.props.parentRowCollapsedComponent}
+            simpleRowComponent={this.props.simpleRowComponent}
             paddingHeight={this.props.paddingHeight} rowHeight={this.props.rowHeight} onRowClick={this.props.onRowClick} />
         });
 

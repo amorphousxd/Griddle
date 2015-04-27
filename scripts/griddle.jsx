@@ -96,6 +96,7 @@ var Griddle = React.createClass({
             "sortDescendingComponent": " ▼",
             "parentRowCollapsedComponent": "▶",
             "parentRowExpandedComponent": "▼",
+            "simpleRowComponent": " ",
             "settingsIconComponent": "",
             "nextIconComponent": "",
             "previousIconComponent":""
@@ -528,6 +529,7 @@ var Griddle = React.createClass({
                 parentRowExpandedClassName={this.props.parentRowExpandedClassName}
                 parentRowCollapsedComponent={this.props.parentRowCollapsedComponent}
                 parentRowExpandedComponent={this.props.parentRowExpandedComponent}
+                simpleRowComponent={this.props.simpleRowComponent}
                 bodyHeight={this.props.bodyHeight}
                 paddingHeight={this.props.paddingHeight}
                 rowHeight={this.props.rowHeight}

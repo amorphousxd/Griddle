@@ -11,8 +11,8 @@
   ],
   "main": "modules/griddle.js",
   "dependencies": {
-    "babel": "^5.1.11",
-    "babel-runtime": "^5.1.11",
+    "babel": "^5.1.13",
+    "babel-runtime": "^5.1.13",
     "object-assign": "^2.0.0",
     "underscore": "^1.8.3"
   },
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "6to5-jest": "*",
-    "babel-core": "^5.1.11",
+    "babel-core": "^5.1.13",
     "babel-loader": "^5.0.0",
     "grunt": "^0.4.5",
     "grunt-6to5": "^3.0.1",
@@ -42,12 +42,12 @@
     "react-chartist": "~0.5.0",
     "react-tools": "~0.13.x",
     "underscore": "~1.8.3",
-    "webpack": "~1.8.9",
+    "webpack": "~1.8.10",
     "webpack-dev-server": "~1.8.2"
   },
   "scripts": {
     "test": "jest",
-    "postinstall": "babel --optional runtime scripts -d modules"
+    "postinstall": "babel scripts -d modules"
   },
   "repository": {
     "type": "git",

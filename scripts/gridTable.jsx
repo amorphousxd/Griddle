@@ -33,6 +33,7 @@ var GridTable = React.createClass({
       "parentRowExpandedClassName": "parent-row expanded",
       "parentRowCollapsedComponent": "▶",
       "parentRowExpandedComponent": "▼",
+      "simpleRowComponent": " ",
       "externalLoadingComponent": null,
       "externalIsLoading": false,
       "onRowClick": null
@@ -141,6 +142,7 @@ var GridTable = React.createClass({
           return (<GridRowContainer useGriddleStyles={that.props.useGriddleStyles} isSubGriddle={that.props.isSubGriddle}
             parentRowExpandedClassName={that.props.parentRowExpandedClassName} parentRowCollapsedClassName={that.props.parentRowCollapsedClassName}
             parentRowExpandedComponent={that.props.parentRowExpandedComponent} parentRowCollapsedComponent={that.props.parentRowCollapsedComponent}
+            simpleRowComponent={that.props.simpleRowComponent}
             data={row} key={uniqueId + '-container'} uniqueId={uniqueId} columnSettings={that.props.columnSettings} rowSettings={that.props.rowSettings} paddingHeight={that.props.paddingHeight}
             rowHeight={that.props.rowHeight} hasChildren={hasChildren} tableClassName={that.props.className} onRowClick={that.props.onRowClick} />)
       });
@@ -224,11 +226,6 @@ var GridTable = React.createClass({
           columnSettings={this.props.columnSettings}
           rowSettings={this.props.rowSettings}/>
         : "");
-
-    //check to see if any of the rows have children... if they don't wrap everything in a tbody so the browser doesn't auto do this
-    if (!anyHasChildren){
-      nodes = <tbody>{nodes}</tbody>
-    }
 
     var pagingContent = "";
     if(this.props.showPager){

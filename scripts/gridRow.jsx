@@ -24,6 +24,7 @@ var GridRow = React.createClass({
         "parentRowExpandedClassName": "parent-row expanded",
         "parentRowCollapsedComponent": "▶",
         "parentRowExpandedComponent": "▼",
+        "simpleRowComponent": " ",
         "onRowClick": null
       }
     },
@@ -77,19 +78,29 @@ var GridRow = React.createClass({
             var columnStyle = assign({}, initialColumnStyle);
 
             var firstColAppend;
+            var paddingNodes = [];
+
+            if (index === 0 && this.props.isChildRow) {
+              for (let i = 0; i < dataView.$$level; i++) {
+                paddingNodes.push(this.props.simpleRowComponent);
+              }
+            }
 
             if (index === 0 && this.props.hasChildren && this.props.showChildren === false && this.props.useGriddleIcons) {
               firstColAppend = <span style={this.props.useGriddleStyles ? {fontSize: "10px", marginRight:"5px"} : null} onClick={this.handleRowExpandToggle}>
+                  {paddingNodes}
                   {this.props.parentRowCollapsedComponent}
                 </span>
             } else if (index === 0 && this.props.hasChildren && this.props.showChildren && this.props.useGriddleIcons) {
               firstColAppend = <span style={this.props.useGriddleStyles ? {fontSize: "10px"} : null} onClick={this.handleRowExpandToggle}>
+                  {paddingNodes}
                   {this.props.parentRowExpandedComponent}
                 </span>
-            }
-
-            if (index === 0 && this.props.isChildRow) {
-              assign(columnStyle, {paddingLeft: 15 * dataView.$$level});
+            } else if (index === 0) {
+              firstColAppend = <span style={this.props.useGriddleStyles ? {fontSize: "10px"} : null}>
+                {paddingNodes}
+                {this.props.simpleRowComponent}
+              </span>
             }
 
             if (this.props.columnSettings.hasColumnMetadata() && typeof meta !== "undefined") {
