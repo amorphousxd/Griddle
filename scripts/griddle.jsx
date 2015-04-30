@@ -238,9 +238,6 @@ var Griddle = React.createClass({
 
         this.setState(state);
     },
-    componentWillReceiveProps: function(nextProps) {
-        this.setMaxPage(nextProps.results);
-    },
     getInitialState: function() {
       this.verifyExternal();
       this.verifyCustom();
@@ -287,6 +284,21 @@ var Griddle = React.createClass({
       };
 
       return assign(state, maxPageState, otherState);
+    },
+    componentWillReceiveProps: function(nextProps) {
+      this.columnSettings = new ColumnProperties(
+        nextProps.results.length > 0 ? _.keys(nextProps.results[0]) : [],
+        nextProps.columns,
+        nextProps.childrenColumnName,
+        nextProps.columnMetadata,
+        nextProps.metadataColumns
+      );
+
+      this.rowSettings = new RowProperties(
+        nextProps.rowMetadata
+      );
+
+      this.setMaxPage(nextProps.results);
     },
     //todo: clean these verify methods up
     verifyExternal: function(){
