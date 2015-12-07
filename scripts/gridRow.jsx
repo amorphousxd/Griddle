@@ -113,7 +113,7 @@ var GridRow = React.createClass({
         });
 
         //Get the row from the row settings.
-        var className = that.props.rowSettings&&that.props.rowSettings.getBodyRowMetadataClass(that.props.data) || "standard-row";
+        var className = that.props.rowSettings && that.props.rowSettings.getBodyRowMetadataClass(that.props.data) || "standard-row";
 
         if(that.props.isChildRow){
             className = "child-row";

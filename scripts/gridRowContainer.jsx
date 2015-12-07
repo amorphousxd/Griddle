@@ -19,6 +19,8 @@ function traverseChildren(root, rootId = 0, level = 0) {
     }, result);
   }
 
+  console.log(result);
+
   return result;
 }
 
