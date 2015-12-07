@@ -82,7 +82,8 @@ var GridRow = React.createClass({
 
             if (index === 0 && this.props.isChildRow) {
               for (let i = 0; i < dataView.$$level; i++) {
-                paddingNodes.push(this.props.simpleRowComponent);
+                //paddingNodes.push(this.props.simpleRowComponent);
+                paddingNode.push(<div key={i} style={{display: 'inline-block', height: 16, width: 16, verticalAlign: 'top', position: 'relative', lineHeight: 0}}></div>)
               }
             }
 
