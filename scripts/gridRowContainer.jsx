@@ -7,15 +7,15 @@ var ColumnProperties = require('./columnProperties');
 var _ = require('underscore');
 var assign = require('object-assign');
 
-function traverseChildren(root, rootId = 0, level = 0) {
+function traverseChildren(parent, parentId = 0, level = 0, childIndex = 0) {
   var result = [];
 
-  root = assign({$$id: rootId + 1, $$parentId: rootId === 0 ? void 0 : rootId, $$level: level}, root)
-  result.push(root);
+  parent = assign({$$id: `${parentId}.${childIndex}`, $$parentId: parentId === '0' ? void 0 : parentId, $$level: level}, parent)
+  result.push(parent);
 
-  if (Array.isArray(root.children) && root.children.length > 0) {
-    result = root.children.reduce(function (acc, child) {
-      return acc.concat(traverseChildren(child, root.$$id, level + 1));
+  if (Array.isArray(parent.children) && parent.children.length > 0) {
+    result = parent.children.reduce(function (acc, child, childIndex) {
+      return acc.concat(traverseChildren(child, parent.$$id, level + 1, childIndex));
     }, result);
   }
 
