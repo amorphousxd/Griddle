@@ -10,7 +10,7 @@ var assign = require('object-assign');
 function traverseChildren(parent, parentId = 0, level = 0, childIndex = 0) {
   var result = [];
 
-  parent = assign({$$id: `${parentId}.${childIndex}`, $$parentId: parentId === '0' ? void 0 : parentId, $$level: level}, parent)
+  parent = assign({$$id: `${parentId}.${childIndex}`, $$parentId: parentId === 0 ? void 0 : parentId, $$level: level}, parent)
   result.push(parent);
 
   if (Array.isArray(parent.children) && parent.children.length > 0) {
