@@ -51,6 +51,7 @@ var GridRowContainer = React.createClass({
     },
     toggleChildren: function (parentId) {
       var {showChildren} = this.state;
+      console.log(parentId);
       if (showChildren.indexOf(parentId) >= 0) {
         this.setShowChildren(_.without(showChildren, parentId));
       } else {
@@ -71,6 +72,7 @@ var GridRowContainer = React.createClass({
       return row.children && row.children.length > 0;
     },
     rowHasShownChildren: function (row) {
+      console.log(row.$$id, this.state.showChildren)
       return this.state.showChildren.indexOf(row.$$id) >= 0;
     },
     render: function() {
