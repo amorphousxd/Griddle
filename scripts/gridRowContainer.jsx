@@ -45,16 +45,29 @@ var GridRowContainer = React.createClass({
     getInitialState: function(){
       return {
         data: {},
-        showChildren: []
+        showChildren: [],
+        traversedData: []
       }
     },
-    componentWillReceiveProps: function(){
-      this.setShowChildren([]);
+    componentWillReceiveProps: function(props){
+      var traversedData = traverseChildren(props.data);
+      this.setState({
+        traversedData: traversedData,
+        showChildren: [],
+      });
     },
     toggleChildren: function (parentId) {
-      var {showChildren} = this.state;
+      var {showChildren, traversedData} = this.state;
       console.log(parentId);
       if (showChildren.indexOf(parentId) >= 0) {
+        var idFromShouldBeDeleted = new RegExp('^'+parentId+'.*');
+        this.setShowChildren(showChildren.map(function(el) {
+          el = el.replace(idFromShouldBeDeleted, '');
+          return el;
+        }).filter(function(el){
+          return el && el.length > 0;
+        });
+      );
         this.setShowChildren(_.without(showChildren, parentId));
       } else {
         this.setShowChildren(showChildren.concat([parentId]));
@@ -81,10 +94,9 @@ var GridRowContainer = React.createClass({
       this.verifyProps();
 
       if(typeof this.props.data === "undefined"){return (<tbody></tbody>);}
-      var arr = traverseChildren(this.props.data)
+      var arr = this.state.traversedData
         .filter((row) => typeof row.$$parentId === 'undefined' || this.state.showChildren.indexOf(row.$$parentId) >= 0)
         .map((row, index) => {
-          console.log(row.$$parentId)
           return <GridRow key={index} useGriddleStyles={this.props.useGriddleStyles} data={row} columnSettings={this.props.columnSettings}
             rowSettings={this.props.rowSettings} hasChildren={this.rowHasChildren(row)} toggleChildren={this.toggleChildren.bind(this, row.$$id)}
             isChildRow={!!row.$$parentId} showChildren={this.rowHasShownChildren(row)} useGriddleIcons={this.props.useGriddleIcons}
