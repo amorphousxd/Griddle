@@ -66,9 +66,9 @@ var GridRowContainer = React.createClass({
           return el;
         }).filter(function(el){
           return el && el.length > 0;
-        });
+        })
       );
-        this.setShowChildren(_.without(showChildren, parentId));
+        //this.setShowChildren(_.without(showChildren, parentId));
       } else {
         this.setShowChildren(showChildren.concat([parentId]));
       }
