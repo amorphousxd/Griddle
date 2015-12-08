@@ -46,7 +46,7 @@ var GridRowContainer = React.createClass({
       return {
         data: {},
         showChildren: [],
-        traversedData: []
+        traversedData: traverseChildren(this.props.data),
       }
     },
     componentWillReceiveProps: function(props){
@@ -94,7 +94,7 @@ var GridRowContainer = React.createClass({
       this.verifyProps();
 
       if(typeof this.props.data === "undefined"){return (<tbody></tbody>);}
-      var arr = this.state.traversedData
+      var arr = traverseChildren(this.props.data)
         .filter((row) => typeof row.$$parentId === 'undefined' || this.state.showChildren.indexOf(row.$$parentId) >= 0)
         .map((row, index) => {
           return <GridRow key={index} useGriddleStyles={this.props.useGriddleStyles} data={row} columnSettings={this.props.columnSettings}
