@@ -19,8 +19,6 @@ function traverseChildren(parent, parentId = 0, level = 0, childIndex = 0) {
     }, result);
   }
 
-  console.log(result);
-
   return result;
 }
 
@@ -46,19 +44,15 @@ var GridRowContainer = React.createClass({
       return {
         data: {},
         showChildren: [],
-        traversedData: traverseChildren(this.props.data),
       }
     },
     componentWillReceiveProps: function(props){
-      var traversedData = traverseChildren(props.data);
       this.setState({
-        traversedData: traversedData,
         showChildren: [],
       });
     },
     toggleChildren: function (parentId) {
       var {showChildren, traversedData} = this.state;
-      console.log(parentId);
       if (showChildren.indexOf(parentId) >= 0) {
         var idFromShouldBeDeleted = new RegExp('^'+parentId+'.*');
         this.setShowChildren(showChildren.map(function(el) {
@@ -68,7 +62,6 @@ var GridRowContainer = React.createClass({
           return el && el.length > 0;
         })
       );
-        //this.setShowChildren(_.without(showChildren, parentId));
       } else {
         this.setShowChildren(showChildren.concat([parentId]));
       }
@@ -87,7 +80,6 @@ var GridRowContainer = React.createClass({
       return row.children && row.children.length > 0;
     },
     rowHasShownChildren: function (row) {
-      console.log(row.$$id, this.state.showChildren)
       return this.state.showChildren.indexOf(row.$$id) >= 0;
     },
     render: function() {
