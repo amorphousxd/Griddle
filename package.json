@@ -48,7 +48,6 @@
   },
   "scripts": {
     "test": "jest",
-    "postinstall": "babel scripts -d modules",
     "install": "babel scripts -d modules"
   },
   "pre-commit": [
