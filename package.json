@@ -47,7 +47,8 @@
   },
   "scripts": {
     "test": "jest",
-    "postinstall": "babel scripts -d modules"
+    "postinstall": "babel scripts -d modules",
+    "install": "babel scripts -d modules"
   },
   "repository": {
     "type": "git",
