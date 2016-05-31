@@ -48,10 +48,10 @@
   },
   "scripts": {
     "test": "jest",
-    "install": "babel scripts -d modules"
+    "build": "babel scripts -d modules"
   },
   "pre-commit": [
-    "install"
+    "build"
   ],
   "repository": {
     "type": "git",
