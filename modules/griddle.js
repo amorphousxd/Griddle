@@ -183,11 +183,14 @@ var Griddle = React.createClass({
     getMaxPageState: function getMaxPageState(results) {
         var maxPage = this.getMaxPage(results);
         if (!this.state || this.state.maxPage !== maxPage) {
-            return { page: 0, maxPage: maxPage, filteredColumns: this.columnSettings.filteredColumns };
+          return { page: 0, maxPage: maxPage, filteredColumns: this.columnSettings.filteredColumns };
         }
     },
     setMaxPage: function setMaxPage(results) {
-        this.setState(this.getMaxPageState(results));
+        const maxPageState = this.getMaxPageState(results);
+        if (maxPageState) {
+          this.setState();
+        }
     },
     setPage: function setPage(number) {
         if (this.props.useExternal) {
